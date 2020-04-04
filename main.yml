@@ -8,24 +8,26 @@ Parameters:
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
 Resources:
-  SecurityGroup
+
+  SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub 'Internal Security group for ${AWS::StackName}'
-      SecurityGroupIngress:
-        -IpProtocol: tcp
-        FromPort: 8080
-        ToPort: 8080
-        CidrIp: 0.0.0.0/0
-        -IpProtocol: tcp
-        FromPort: 22
-        ToPort: 22
-        CidrIp: 0.0.0.0/0
-      Tags:
-        -Key: Name
-        Value: !Ref AWS:StackName
 
-  InstanceRole
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+
+  InstanceRole:
     Type: "AWS::IAM::Role"
     Properties:
       AssumeRolePolicyDocument:
@@ -39,16 +41,16 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudwatchFullAccess
       Tags:
-        -Key: Name
-        Value: !Ref AWS::StackName
+        - Key: Name
+          Value: !Ref AWS::StackName
 
-  InstanceProfile
+  InstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
       Roles:
         - Ref: InstanceRole
 
-  Instance
+  Instance:
     Type: AWS::EC2::Instance
     CreationPolicy:
       ResourceSignal:
@@ -69,7 +71,7 @@ Resources:
       SecurityGroupIds:
         - !GetAtt SecurityGroup.GroupId
       UserData:
-        Fn:Base64: !Sub |
+        Fn::Base64: !Sub |
           #!/bin/bash -xe
 
           exec > /tmp/userdata.log 2>&1
@@ -107,13 +109,13 @@ Resources:
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource Instance
 
       Tags:
-        -Key: Name
-        Value !Ref AWS::StackName
+        - Key: Name
+          Value: !Ref AWS::StackName
 
 Outputs:
   InstanceEndpoint:
     Description: DNS name for created instance
-    Value !Sub "http://${Instance.PublicDnsName}:8080"
+    Value: !Sub "http://${Instance.PublicDnsName}:8080"
     Export:
       Name: InstanceEndpoint
 
