@@ -66,7 +66,7 @@ Resources:
     Properties:
       ImageId: !Ref EC2AMI
       InstanceType: !Ref EC2InstanceType
-      IAMInstanceProfile: !Ref InstanceProfile
+      IamInstanceProfile: !Ref InstanceProfile
       Monitoring: true
       SecurityGroupIds:
         - !GetAtt SecurityGroup.GroupId
@@ -76,7 +76,6 @@ Resources:
 
           exec > /tmp/userdata.log 2>&1
           yum -y update
-          https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/bestpractices.html#cfninit
 
           yum install -y aws-cfn-bootstrap
 

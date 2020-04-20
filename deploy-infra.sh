@@ -9,7 +9,7 @@ EC2_INSTANCE_TYPE=t2.micro
 echo -e "\n\n========== Deploying main.yml ============"
 aws cloudformation deploy \
   --region $REGION \
-  --profile $CLI_PROFILE \
+  #--profile $CLI_PROFILE \
   --stack-name $STACK_NAME \
   --template-file main.yml \
   --no-fail-on-empty-changeset \
@@ -20,6 +20,6 @@ aws cloudformation deploy \
 
 if [ $? -eq 0 ]; then
   aws cloudformation list-exports \
-    --profile awsbootstrap \
+    #--profile awsbootstrap \
     --query "Exports[?Name=='InstanceEndpoint'].Value"
 fi
