@@ -84,7 +84,7 @@ Resources:
 
           wget https://github.com/jmarks199/web_app/archive/master.zip
           unzip master.zip
-          mv web-app-master app
+          mv web_app-master app
 
           chown ec2-user:ec2-user /home/ec2-user/app/install_script.sh && chmod a+x /home/ec2-user/app/install_script.sh
           sleep 1; su - ec2-user -c "/home/ec2-user/app/install_script.sh"
