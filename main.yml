@@ -95,7 +95,7 @@ Resources:
             
             wget https://github.com/jmarks199/web_app/archive/master.zip
             unzip master.zip
-            mv aws-bootstrap-master app
+            mv web-app-master app
 
             mkdir -p /home/ec2-user/app/logs
             cd app
