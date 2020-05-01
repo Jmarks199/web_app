@@ -79,7 +79,7 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Ref AWS::StackName
-      ServiceRole: !GetAtt DeploymentRole.arn
+      ServiceRole: !GetAtt DeploymentRole.Arn
       Artifacts:
         Type: CODEPIPELINE
       Environment:
@@ -108,61 +108,61 @@ Resources:
           Type: KEY_AND_VALUE
           Value: !Ref AWS::StackName
           
-Pipeline:
-  Type: AWS::CodePipeline::Pipeline
-  Properties:
-    Name: !Ref AWS::StackName
-  ArtifactStore:
-    Location: !Ref CodePipelineBucket
-    Type: S3
-  RoleArn: !GetAtt DeploymentRole.Arn
-  Stages:
-    - Name: Source
-      Actions:
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Ref AWS::StackName
+      ArtifactStore:
+        Location: !Ref CodePipelineBucket
+        Type: S3
+      RoleArn: !GetAtt DeploymentRole.Arn
+      Stages:
         - Name: Source
-          ActionTypeId:
-            Category: Source
-            Owner: ThirdParty
-            Version: 1
-            Provider: GitHub
-          OutputArtifacts:
+          Actions:
             - Name: Source
-          Configuration:
-            Owner: !Ref GitHubOwner
-            Repo: !Ref GitHubRepo
-            Branch: !Ref GitHubBranch
-            OAuthToken: !Ref GitHubPersonalAccessToken
-            PollForSourceChanges: false
-          RunOrder: 1
-    - Name: Build
-      Actions:
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: '1'
+                Provider: GitHub
+              OutputArtifacts:
+                - Name: Source
+              Configuration:
+                Owner: !Ref GitHubOwner
+                Repo: !Ref GitHubRepo
+                Branch: !Ref GitHubBranch
+                OAuthToken: !Ref GitHubPersonalAccessToken
+                PollForSourceChanges: false
+              RunOrder: 1
         - Name: Build
-          ActionTypeId:
-            Category: Build
-            Owner: AWS
-            Version: 1
-            Provider: CodeBuild
-          InputArtifacts:
-            - Name: Source
-          OutputArtifacts:
+          Actions:
             - Name: Build
-          Configuration:
-            ProjectName: !Ref BuildProject
-          RunOrder: 1
-    - Name: Staging
-      Actions:
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: Source
+              OutputArtifacts:
+                - Name: Build
+              Configuration:
+                ProjectName: !Ref BuildProject
+              RunOrder: 1
         - Name: Staging
-          InputArtifacts:
-          - Name: Build
-          ActionTypeId:
-            Category: Deploy
-            Owner: AWS
-            Version: 1
-            Provider: CodeDeploy
-          Configuration:
-            ApplicationName: !Ref DeploymentApplication
-            DeploymentGroupName: !Ref StagingDeploymentGroup
-          RunOrder: 1
+          Actions:
+            - Name: Staging
+              InputArtifacts:
+              - Name: Build
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: '1'
+                Provider: CodeDeploy
+              Configuration:
+                ApplicationName: !Ref DeploymentApplication
+                DeploymentGroupName: !Ref StagingDeploymentGroup
+              RunOrder: 1
     
   PipelineWebhook:
     Type: AWS::CodePipeline::Webhook
