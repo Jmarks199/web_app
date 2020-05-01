@@ -52,10 +52,6 @@ Resources:
 
   Instance:
     Type: AWS::EC2::Instance
-    CreationPolicy:
-      ResourceSignal:
-        Timeout: PT15M
-        Count: 1
     Metadata:
       AWS::CloudFormation::Init:
         config:
@@ -70,25 +66,6 @@ Resources:
       Monitoring: true
       SecurityGroupIds:
         - !GetAtt SecurityGroup.GroupId
-      UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash -xe
-
-          exec > /tmp/userdata.log 2>&1
-          yum -y update
-
-          yum install -y aws-cfn-bootstrap
-
-          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --region
-          ${AWS::Region} --resource Instance
-
-          wget https://github.com/jmarks199/web_app/archive/master.zip
-          unzip master.zip
-          mv web_app-master app
-
-          chown ec2-user:ec2-user /home/ec2-user/app/install_script.sh && chmod a+x /home/ec2-user/app/install_script.sh
-          sleep 1; ./app/install_script.sh
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource Instance
 
       Tags:
         - Key: Name
