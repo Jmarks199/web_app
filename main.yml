@@ -20,10 +20,10 @@ Parameters:
     Description: "Branch"
   GitHubPersonalAccessToken:
     Type: String
+    NoEcho: true
     Description: "Token"
 
 Resources:
-
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:

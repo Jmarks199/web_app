@@ -31,7 +31,7 @@ aws cloudformation deploy \
   --no-fail-on-empty-changeset \
   --capabilities CAPABILITY_NAMED_IAM \
   --parameter-overrides \
-    EC2InstanceType=$EC2_INSTANCE_TYPE
+    EC2InstanceType=$EC2_INSTANCE_TYPE \
     GitHubOwner=$GH_OWNER \
     GitHubRepo=$GH_REPO \
     GitHubBranch=$GH_BRANCH \
